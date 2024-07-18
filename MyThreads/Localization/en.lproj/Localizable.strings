@@ -1,0 +1,79 @@
+/* 
+  Localizable.strings
+  MyThreads
+
+  Created by Veysal Hasanbayli on 02.07.24.
+  
+*/
+
+//Login
+
+"enterEmail" = "Enter your email here";
+"enterPassword" = "Enter your password here";
+"login" = "Login";
+"forgotPassword" = "Forgot Password?";
+"donthaveacc" = "Don't have an account?";
+"signup" = "Sign Up";
+
+// Register
+
+"enterFullname" = "Enter your fullname here";
+"enterUsername" = "Enter your username here";
+"register" = "Register";
+"back" = "Back";
+"error" = "Error";
+"fillAll" = "Please, fill all inputs";
+"success" = "Ugurlu";
+"gotoLogin" = "Zəhmət olmazsa, yenidən daxil olun";
+"cancel" = "Cancel";
+
+// Search
+
+"search" = "Search";
+"follow" = "Follow";
+"following" = "Following";
+
+
+
+// profile
+
+"edit" = "Edit profile";
+"share" = "Share profile";
+"done" = "Done";
+"name" = "Name";
+"bio" = "Bio";
+"link" = "Link";
+"private" = "Private profile";
+"enteryourbio" = "Enter your bio here";
+"addlink" = "Add link";
+
+
+// Upload
+
+"newthreads" = "New thread";
+"post" = "Post";
+"startathread" = "Start a thread...";
+
+
+//Edit profile
+
+"selecttype" = "Select photo source type";
+"library" = "Library";
+"camera" = "Camera";
+
+
+
+"cannotbeempty" = "Please, write anything to post";
+
+"more" = "More";
+"liked" = "Liked";
+"language" = "Language";
+"help" = "Help";
+"about" = "About";
+"doYouWantToTogout" = "Do you want to log out?";
+"logout" = "Log Out";
+"ok" = "OK";
+"doYouWantToChangeLanguage" = "Do you want to change language?";
+"selectLanguage" = "Select Language";
+"az" = "Azərbaycan Dili";
+"en" = "English";

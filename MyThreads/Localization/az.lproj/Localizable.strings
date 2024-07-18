@@ -1,0 +1,84 @@
+/* 
+  Localizable.strings
+  MyThreads
+
+  Created by Veysal Hasanbayli on 02.07.24.
+  
+*/
+
+
+// Login
+
+"enterEmail" = "Emaili daxil edin";
+"enterPassword" = "Şifrənizi daxil edin";
+"login" = "Daxil olun";
+"forgotPassword" = "Şifrənizi unutdunuz?";
+"donthaveacc" = "Hesabınız yoxdur?";
+"signup" = "Qeydiyyat";
+
+
+//Register
+
+"enterFullname" = "Adınızı daxil edin";
+"enterUsername" = "İstifadəçi adınızı daxil edin";
+"register" = "Qeydiyyatdan keçin";
+"back" = "Geri";
+"error" = "Səhv";
+"fillAll" = "Zəhmət olmazsa, bütün xanaları doldurun";
+"success" = "Uğurlu";
+"gotoLogin" = "Zəhmət olmazsa, yenidən daxil olun";
+"cancel" = "Ləğv";
+
+
+// Search
+
+"search" = "Axtarış";
+"follow" = "İzlə";
+"following" = "İzlənilir";
+
+
+//
+
+
+// profile
+
+"edit" = "Redaktə et";
+"share" = "Paylaş";
+"done" = "Hazır";
+"name" = "Ad Soyad";
+"bio" = "Bioqrafiya";
+"link" = "Əlaqə";
+"private" = "Özəl hesab";
+"enteryourbio" = "Bioqrafiyanızı daxil edin";
+"addlink" = "Link əlavə edin";
+
+
+// Upload
+
+"newthreads" = "Yeni thread";
+"post" = "Paylaş";
+"startathread" = "Start a thread...";
+
+
+//Edit profile
+
+"selecttype" = "Şəkili götürmək istədiyiniz mənbəyi seçin";
+"library" = "Kitabxana";
+"camera" = "Kamera";
+
+
+"cannotbeempty" = "Zəhmət olmasa, paylaşmaq üçün nəsə yazın";
+
+"more" = "Digər";
+"liked" = "Bəyəndiklərin";
+"language" = "Dil";
+"help" = "Kömək";
+"about" = "Haqqında";
+"doYouWantToTogout" = "Çıxmaq istədiyinizdən əminsiniz?";
+"logout" = "Çıxış";
+"ok" = "Bəli";
+
+"doYouWantToChangeLanguage" = "Dili dəyişmək istəyirsiniz?";
+"selectLanguage" = "Dili seçin";
+"az" = "Azərbaycan Dili";
+"en" = "English";
