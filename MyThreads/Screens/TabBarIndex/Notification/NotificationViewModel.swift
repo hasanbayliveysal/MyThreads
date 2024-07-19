@@ -8,6 +8,7 @@
 import UIKit
 
 class NotificationViewModel: NSObject {
+    var selectedUser: ((String) ->())?
     private var selectedActivity: Activities = .Follow {
         didSet {
             Task {
@@ -45,6 +46,9 @@ class NotificationViewModel: NSObject {
             loadingStateChanged?(false)
         }
     }
+    private func fetchFollowedUserIDs() async throws -> [String] {
+        return try await UserService.shared.fetchFollowedUsersID()
+    }
 }
 
 
@@ -56,7 +60,38 @@ extension NotificationViewModel: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: LeftImageTitleButtonCell.identifier, for: indexPath) as! LeftImageTitleButtonCell
         cell.configure(with: self.users[indexPath.row], activity: selectedActivity)
+        let user = self.users[indexPath.row]
+        Task {
+            do {
+                let followedUserIDs = try await fetchFollowedUserIDs()
+                let isFollowing = followedUserIDs.contains { $0 == user.id }
+                DispatchQueue.main.async {
+                    isFollowing ? cell.isFollowingg() : cell.isNotFollowing()
+                    cell.isFollowing = isFollowing
+                }
+            } catch {
+                print("Error fetching followed users: \(error)")
+            }
+        }
+
+        cell.isFollowingClousure = { isFollowing in
+            Task {
+                do {
+                    if isFollowing {
+                        try await UserService.shared.addFollower(with: user.id)
+                    } else {
+                        try await UserService.shared.removeFollower(with: user.id)
+                    }
+                } catch {
+                    print("Error updating follow status: \(error)")
+                }
+            }
+        }
         return cell
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        selectedUser?(users[indexPath.row].id)
     }
 }
 

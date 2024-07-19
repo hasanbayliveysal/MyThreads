@@ -25,10 +25,17 @@ final class CommentsVC: BaseViewController<CommentsVM> {
         return stackView
     }()
     
+    private let bottomView: CenterInputButtonView = {
+        let view = CenterInputButtonView()
+        view.backgroundColor = .white
+        return view
+    }()
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
-        navigationItem.title = "Replies"
+        navigationItem.title = "replies".localized()
         setup()
     }
     
@@ -43,6 +50,7 @@ final class CommentsVC: BaseViewController<CommentsVM> {
         repliesTV.register(LeftImageTitleSubtitleCell.self, forCellReuseIdentifier: LeftImageTitleSubtitleCell.identifier)
         repliesTV.dataSource = vm
         view.addSubview(repliesTV)
+        view.addSubview(bottomView)
         setupConstraints()
         
         vm.reloadTableView = {[weak self] in
@@ -50,11 +58,26 @@ final class CommentsVC: BaseViewController<CommentsVM> {
                 self?.repliesTV.reloadData()
             }
         }
+        bottomView.postButtunTapped = { [weak self] postedText in
+            guard let postedText else {
+                self?.showAlert("error".localized(), "cannotbeempty".localized())
+                return
+            }
+            Task {
+                await self?.vm.addComment(postedText: postedText)
+            }
+            
+        }
     }
     
     private func setupConstraints() {
+        bottomView.snp.makeConstraints { make in
+            make.leading.trailing.bottom.equalTo(view.safeAreaLayoutGuide).inset(8)
+            make.height.equalTo(40)
+        }
         repliesTV.snp.makeConstraints { make in
-            make.top.bottom.leading.trailing.equalTo(view.safeAreaLayoutGuide)
+            make.top.leading.trailing.equalTo(view.safeAreaLayoutGuide)
+            make.bottom.equalTo(bottomView.snp.top).offset(-16)
         }
     }
 }

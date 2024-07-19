@@ -78,7 +78,7 @@ class ProfileHeaderView: UIView {
         return stackView
     }()
     
-    private let editButton: WhiteBackgroundButton = {
+    let editButton: WhiteBackgroundButton = {
         let button = WhiteBackgroundButton()
         button.setTitle("edit".localized(), for: .normal)
         return button

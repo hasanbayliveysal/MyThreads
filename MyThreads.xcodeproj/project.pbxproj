@@ -67,6 +67,7 @@
 		FCF9CC172C48ECFD00485DE9 /* CenterTitleCVCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCF9CC162C48ECFD00485DE9 /* CenterTitleCVCell.swift */; };
 		FCF9CC1A2C48F7AE00485DE9 /* ActivityService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCF9CC192C48F7AE00485DE9 /* ActivityService.swift */; };
 		FCF9CC1E2C49C5CD00485DE9 /* LikedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCF9CC1D2C49C5CD00485DE9 /* LikedViewController.swift */; };
+		FCF9CC222C4A92D900485DE9 /* CenterInputButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCF9CC212C4A92D900485DE9 /* CenterInputButtonView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -127,6 +128,7 @@
 		FCF9CC162C48ECFD00485DE9 /* CenterTitleCVCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CenterTitleCVCell.swift; sourceTree = "<group>"; };
 		FCF9CC192C48F7AE00485DE9 /* ActivityService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityService.swift; sourceTree = "<group>"; };
 		FCF9CC1D2C49C5CD00485DE9 /* LikedViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikedViewController.swift; sourceTree = "<group>"; };
+		FCF9CC212C4A92D900485DE9 /* CenterInputButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CenterInputButtonView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -360,6 +362,7 @@
 				FC51F73B2C48079400439952 /* CommnetsVC.swift */,
 				FC51F73D2C4807A400439952 /* CommentsVM.swift */,
 				FCF9CC142C48406C00485DE9 /* LeftImageTitleSubtitleCell.swift */,
+				FCF9CC212C4A92D900485DE9 /* CenterInputButtonView.swift */,
 			);
 			path = CommentsVC;
 			sourceTree = "<group>";
@@ -632,6 +635,7 @@
 				FC429FE92C3A624900100F2E /* EditProfileViewModel.swift in Sources */,
 				FC3E33782C32D41D0044AB2A /* LoginViewController.swift in Sources */,
 				FC429FE52C3748CF00100F2E /* User.swift in Sources */,
+				FCF9CC222C4A92D900485DE9 /* CenterInputButtonView.swift in Sources */,
 				FC429FCA2C34439B00100F2E /* CurrentUserProfileViewController.swift in Sources */,
 				FC51F7282C3FED1C00439952 /* UserProfileViewModel.swift in Sources */,
 				FC51F7262C3FECF500439952 /* GuestUserProfileViewController.swift in Sources */,

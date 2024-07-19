@@ -91,6 +91,7 @@ final class NotificationViewController: BaseViewController<NotificationViewModel
                 }
             }
         }
+        pushUserVC()
     }
     
     private func setupConstraints() {
@@ -127,5 +128,12 @@ final class NotificationViewController: BaseViewController<NotificationViewModel
     private func hideLoading() {
         blurEffectView.isHidden = true
         activityIndicator.stopAnimating()
+    }
+    
+    private func pushUserVC() {
+        vm.selectedUser = { [weak self] selectedUserID in
+            let vc = self?.router.guestUserProfileVC(with: selectedUserID)
+            self?.navigationController?.pushViewController(vc ?? UIViewController(), animated: true)
+        }
     }
 }

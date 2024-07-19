@@ -22,8 +22,6 @@ protocol RouterProtocol {
 }
 
 class Router: RouterProtocol {
-  
-    
     func loginVC() -> UIViewController {
         return LoginViewController(vm: LoginViewModel(), router: self)
     }

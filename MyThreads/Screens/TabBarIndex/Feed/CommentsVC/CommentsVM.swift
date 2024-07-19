@@ -6,9 +6,11 @@
 //
 
 import UIKit
+import FirebaseAuth
 
 class CommentsVM: NSObject {
     var threadID: String
+    var currentUser = Auth.auth().currentUser
     
     init(threadID: String) {
         self.threadID = threadID
@@ -24,6 +26,17 @@ class CommentsVM: NSObject {
     func getComment() async throws {
         self.comments = try await ThreadsService.shared.getComment(with: threadID)
     }
+    
+    func addComment(postedText: String) async {
+        guard let userID = currentUser?.uid else {return}
+        do {
+            try await ThreadsService.shared.addComment(with: .init(author: userID, title: postedText, time: Date()), and: threadID)
+        } catch {
+            print(error.localizedDescription)
+        }
+    }
+    
+    
 }
 
 extension CommentsVM: UITableViewDataSource {

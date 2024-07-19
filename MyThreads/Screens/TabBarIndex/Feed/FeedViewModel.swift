@@ -9,6 +9,7 @@ import UIKit
 import FirebaseAuth
 
 class FeedViewModel: NSObject {
+    var selectedUserID: ((String)->Void)?
     private var threads: [Thread] = []
     private var imagesLoading: Int = 0
     var allImagesLoaded: (() -> Void)?
@@ -60,15 +61,7 @@ class FeedViewModel: NSObject {
         }
     }
     
-    func addComment(threadID: String) async {
-        guard let userID = currentUser?.uid else {return}
-        do {
-            try await ThreadsService.shared.addComment(with: .init(author: userID, title: "Salam", time: Date()), and: threadID)
-        } catch {
-            print(error.localizedDescription)
-        }
-    }
-    
+   
 }
 
 extension FeedViewModel: UITableViewDelegate, UITableViewDataSource {
@@ -81,6 +74,7 @@ extension FeedViewModel: UITableViewDelegate, UITableViewDataSource {
         cell.configure(with: threads[indexPath.row]) {
             self.imageLoaded()
         }
+        
         cell.commentButtonTapped = { [weak self] in
             self?.commentButtonTapped?(self?.threads[indexPath.row].id ?? "")
         }
@@ -102,8 +96,6 @@ extension FeedViewModel: UITableViewDelegate, UITableViewDataSource {
     
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        Task {
-            await addComment(threadID: threads[indexPath.row].id)
-        }
+        self.selectedUserID?(threads[indexPath.row].author)
     }
 }

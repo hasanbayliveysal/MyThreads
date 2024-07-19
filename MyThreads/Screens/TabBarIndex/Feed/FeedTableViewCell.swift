@@ -164,6 +164,7 @@ class FeedTableViewCell: UITableViewCell {
             do {
                 let user = try await getAuthor(by: thread.author)
                 usernameLabel.text = user.username
+                
                 await MainActor.run(body: {
                     self.postedLabel.text = thread.thread
                     self.timeLabel.text = thread.formattedTime

@@ -60,6 +60,24 @@ class UserProfileViewModel: NSObject {
     func fetchUser() async throws -> User {
         return try await UserService.shared.fetchUserByID(with: userID ?? "")
     }
+    
+    func followUser() async {
+        do {
+            guard let userID else {return}
+            try await UserService.shared.addFollower(with: userID)
+        } catch {
+            print(error.localizedDescription)
+        }
+    }
+    
+    func unfollowUser() async {
+        do {
+            guard let userID else {return}
+            try await UserService.shared.removeFollower(with: userID)
+        } catch {
+            print(error.localizedDescription)
+        }
+    }
 }
 
 extension UserProfileViewModel: UITableViewDataSource {

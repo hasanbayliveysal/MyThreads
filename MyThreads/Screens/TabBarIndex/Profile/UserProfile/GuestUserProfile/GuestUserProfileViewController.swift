@@ -9,7 +9,7 @@ import UIKit
 import FirebaseAuth
 
 final class GuestUserProfileViewController: BaseViewController<UserProfileViewModel> {
-
+    private var isFollowing: Bool? = nil
     private let moreButton: UIButton = {
         let button = UIButton()
         button.setImage(UIImage(systemName: "line.horizontal.3"), for: .normal)
@@ -85,12 +85,14 @@ final class GuestUserProfileViewController: BaseViewController<UserProfileViewMo
                 let user = try await vm.fetchUser()
                 let isFollowing = user.followerIDs.contains(where: {$0 == currentUserID})
                 headerView.configure(with: .init(name: user.fullname, username: user.username, image: user.profileImageUrl, bio: user.bio, followersCount: user.followerIDs.count), and: .GuestUser(isFollowing: isFollowing))
+                self.isFollowing = isFollowing
             } catch {
                 self.showAlert("error".localized(), "\(error.localizedDescription)")
             }
             showLoading(false)
         }
         setupConstraints()
+        headerView.addTargetEditButton(target: self, action: #selector(didTapFollowButton), for: .touchUpInside)
         moreButton.addTarget(self, action: #selector(didTapMoreButton), for: .touchUpInside)
     }
     
@@ -126,4 +128,40 @@ extension GuestUserProfileViewController {
     private func didTapMoreButton() {
         print("DEBUG More button clicked")
     }
+    
+    @objc
+    private func didTapFollowButton() {
+        isFollowing?.toggle()
+        guard let isFollowing else {return}
+        isFollowing ? isFollowingg() : isNotFollowing()
+    }
+    
+    func isFollowingg() {
+        Task {
+            await vm.followUser()
+        }
+        headerView.editButton.setTitleColor(
+            .black,
+            for: .normal)
+        headerView.editButton.backgroundColor = .white
+        headerView.editButton.setTitle(
+            "following".localized(),
+            for: .normal)
+    }
+    
+    func isNotFollowing() {
+        Task {
+            await vm.unfollowUser()
+        }
+        headerView.editButton.setTitleColor(
+            .white,
+            for: .normal)
+        headerView.editButton.backgroundColor = .black
+        headerView.editButton.setTitle(
+            "follow".localized(),
+            for: .normal)
+    }
+    
+    
+    
 }

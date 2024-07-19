@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import FirebaseAuth
 
 final class FeedViewController: BaseViewController<FeedViewModel> {
     
@@ -51,6 +52,7 @@ final class FeedViewController: BaseViewController<FeedViewModel> {
         refreshControl.addTarget(self, action: #selector(refreshThreads), for: .valueChanged)
         setupConstraints()
         pushCommentVC()
+        pushUserVC()
     }
     
     private func setupConstraints() {
@@ -117,6 +119,18 @@ final class FeedViewController: BaseViewController<FeedViewModel> {
             let vc = self.router.commentVC(threadID: id)
             let navVC = UINavigationController(rootViewController: vc)
             self.present(navVC, animated: true)
+        }
+    }
+    
+    private func pushUserVC() {
+        let currentUser = Auth.auth().currentUser
+        vm.selectedUserID = { [weak self] selectedUserID in
+            if selectedUserID == currentUser?.uid {
+                self?.tabBarController?.selectedIndex = 4
+            } else {
+                let vc = self?.router.guestUserProfileVC(with: selectedUserID)
+                self?.navigationController?.pushViewController(vc ?? UIViewController(), animated: true)
+            }
         }
     }
 }
