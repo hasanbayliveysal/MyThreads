@@ -4,6 +4,7 @@
 //
 //  Created by Veysal Hasanbayli on 04.07.24.
 //
+
 import UIKit
 
 protocol SelectedImageDelegate: AnyObject {
@@ -88,9 +89,12 @@ final class EditProfileViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
+        registerForKeyboardNotifications()
+        addTapGestureRecognizer()
     }
     
     override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         fetchCurrentUser()
     }
     
@@ -100,26 +104,20 @@ final class EditProfileViewController: UIViewController {
         navigationItem.leftBarButtonItem = UIBarButtonItem(title: "cancel".localized(), style: .plain, target: self, action: #selector(didTapCancelButton))
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: "done".localized(), style: .done, target: self, action: #selector(didTapDoneButton))
         
-        [createTitleLabel(with: "name"), subtitleLabel].forEach({ titleSubtitleStackView.addArrangedSubview($0) })
-        [titleSubtitleStackView, rightImage].forEach({ topStackView.addArrangedSubview($0) })
-        [createTitleLabel(with: "bio"), bioInputField].forEach({ bioStackView.addArrangedSubview($0) })
-        [createTitleLabel(with: "link"), linkInputField].forEach({ linkStackView.addArrangedSubview($0) })
-        [createTitleLabel(with: "private"), mySwitch].forEach({ bottomStackView.addArrangedSubview($0) })
+        [createTitleLabel(with: "name"), subtitleLabel].forEach(titleSubtitleStackView.addArrangedSubview)
+        [titleSubtitleStackView, rightImage].forEach(topStackView.addArrangedSubview)
+        [createTitleLabel(with: "bio"), bioInputField].forEach(bioStackView.addArrangedSubview)
+        [createTitleLabel(with: "link"), linkInputField].forEach(linkStackView.addArrangedSubview)
+        [createTitleLabel(with: "private"), mySwitch].forEach(bottomStackView.addArrangedSubview)
         
-        [topStackView, Rectangle(),
-         bioStackView, Rectangle(),
-         linkStackView, Rectangle(),
-         bottomStackView, Rectangle()]
-            .forEach({ mainStackView.addArrangedSubview($0) })
+        [topStackView, Rectangle(), bioStackView, Rectangle(), linkStackView, Rectangle(), bottomStackView, Rectangle()]
+            .forEach(mainStackView.addArrangedSubview)
         
         view.addSubview(containerView)
         containerView.addSubview(mainStackView)
         containerView.addSubview(activityIndicator)
         
         setupConstraints()
-        addTapGestureRecognizer()
-        
-        
     }
     
     private func setupConstraints() {
@@ -155,10 +153,39 @@ final class EditProfileViewController: UIViewController {
         return label
     }
     
+    private func registerForKeyboardNotifications() {
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(_:)), name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(_:)), name: UIResponder.keyboardWillHideNotification, object: nil)
+    }
+    
+    @objc private func keyboardWillShow(_ notification: Notification) {
+        guard let keyboardFrame = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect else { return }
+        let keyboardHeight = keyboardFrame.height
+        
+        UIView.animate(withDuration: 0.3) {
+            self.containerView.transform = CGAffineTransform(translationX: 0, y: -keyboardHeight + self.view.bounds.height/4 + self.view.safeAreaInsets.bottom)
+        }
+    }
+    
+    @objc private func keyboardWillHide(_ notification: Notification) {
+        UIView.animate(withDuration: 0.3) {
+            self.containerView.transform = .identity
+        }
+    }
+    
     private func addTapGestureRecognizer() {
-        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(didTapImageView))
+        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
+        tapGestureRecognizer.cancelsTouchesInView = false
+        view.addGestureRecognizer(tapGestureRecognizer)
+        
         rightImage.isUserInteractionEnabled = true
-        rightImage.addGestureRecognizer(tapGestureRecognizer)
+        let tapGestureRecognizerForImage = UITapGestureRecognizer(target: self, action: #selector(didTapImageView))
+        tapGestureRecognizerForImage.cancelsTouchesInView = false
+        rightImage.addGestureRecognizer(tapGestureRecognizerForImage)
+    }
+    
+    @objc private func dismissKeyboard() {
+        view.endEditing(true)
     }
     
     @objc private func didTapCancelButton() {
@@ -167,6 +194,7 @@ final class EditProfileViewController: UIViewController {
     
     @objc private func didTapDoneButton() {
         guard let image = rightImage.image else {
+            showAlert("error".localized(), "Please select an image.")
             return
         }
         
@@ -174,21 +202,18 @@ final class EditProfileViewController: UIViewController {
         
         Task {
             do {
-                try await vm.uploadUserData(userData: .init(image: image, bio: bioInputField.text, link: linkInputField.text))
-                
-                // Update CurrentUserVC with new data
-                delegate?.setUserProfile(userData: .init(image: image, bio: bioInputField.text, link: linkInputField.text))
-                
+                let userData = UserData(image: image, bio: bioInputField.text, link: linkInputField.text)
+                try await vm.uploadUserData(userData: userData)
                 await MainActor.run {
+                    self.delegate?.setUserProfile(userData: userData)
                     self.activityIndicator.stopAnimating()
                     self.dismiss(animated: true)
                 }
             } catch {
-                // Handle error
                 print("Error uploading data: \(error.localizedDescription)")
                 await MainActor.run {
                     self.activityIndicator.stopAnimating()
-                    // Show alert or handle error
+                    self.showAlert("error".localized(), error.localizedDescription)
                 }
             }
         }
@@ -200,48 +225,54 @@ final class EditProfileViewController: UIViewController {
             let imagePicker = UIImagePickerController()
             imagePicker.sourceType = sourceType
             imagePicker.delegate = self
-            self.present(imagePicker, animated: true, completion: nil)
+            self.present(imagePicker, animated: true)
         }
     }
     
     private func createActionSheet(completion: @escaping ((UIImagePickerController.SourceType) -> Void)) {
-        let alert = UIAlertController(title: "selecttype".localized(), message: "", preferredStyle: .actionSheet)
-        let cameraButton = UIAlertAction(title: "camera".localized(), style: .default) { _ in
+        let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+        alert.addAction(UIAlertAction(title: "camera".localized(), style: .default) { _ in
             completion(.camera)
-        }
-        let libraryButton = UIAlertAction(title: "library".localized(), style: .default) { _ in
+        })
+        alert.addAction(UIAlertAction(title: "library".localized(), style: .default) { _ in
             completion(.photoLibrary)
-        }
-        let cancelButton = UIAlertAction(title: "cancel".localized(), style: .cancel)
-        
-        [cameraButton, libraryButton, cancelButton].forEach({ alert.addAction($0) })
-        self.present(alert, animated: true)
+        })
+        alert.addAction(UIAlertAction(title: " cancel".localized(), style: .cancel))
+        present(alert, animated: true)
     }
     
     private func fetchCurrentUser() {
         Task {
             do {
                 let user = try await vm.fetchCurrentUser()
-                subtitleLabel.text = user.username
-                guard let imageUrl = user.profileImageUrl else {return}
-                rightImage.kf.setImage(with: URL(string: imageUrl))
+                subtitleLabel.text = user.fullname
+                if let imageUrl = user.profileImageUrl, let url = URL(string: imageUrl) {
+                    rightImage.kf.setImage(with: url)
+                }
             } catch {
-                print(error.localizedDescription)
+                print("Error fetching user: \(error.localizedDescription)")
             }
         }
+    }
+    
+    private func showAlert(_ title: String, _ message: String) {
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .default))
+        present(alert, animated: true)
     }
 }
 
 extension EditProfileViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]) {
-        picker.dismiss(animated: true, completion: nil)
-        if let pickedImage = info[.originalImage] as? UIImage {
-            rightImage.image = pickedImage
-            delegate?.setUserProfile(userData: .init(image: pickedImage, bio: bioInputField.text, link: linkInputField.text))
+        picker.dismiss(animated: true) {
+            if let pickedImage = info[.originalImage] as? UIImage {
+                self.rightImage.image = pickedImage
+                self.delegate?.setUserProfile(userData: UserData(image: pickedImage, bio: self.bioInputField.text, link: self.linkInputField.text))
+            }
         }
     }
     
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
-        picker.dismiss(animated: true, completion: nil)
+        picker.dismiss(animated: true)
     }
 }

@@ -79,3 +79,11 @@
 "en" = "English";
 "replies" = "Replies";
 "writereplieshere" = "Write replies here";
+"mentions" = "Mentions";
+"follows" = "Follow";
+"followedyou" = "Start following you";
+"likedthread"  = "Liked your thread";
+"repliedthread" = "Replied your thread";
+"activity" = "Activity";
+"Please configure your email in the Mail app." = "Please configure your email in the Mail app.";
+"Mail services are not available" = "Mail services are not available";

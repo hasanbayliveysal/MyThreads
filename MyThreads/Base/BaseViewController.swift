@@ -16,6 +16,7 @@ class BaseViewController<VM>: UIViewController {
         let backButtonTitle = "back".localized()
         let backBarButtonItem = UIBarButtonItem(title: backButtonTitle, style: .plain, target: nil, action: nil)
         navigationItem.backBarButtonItem = backBarButtonItem
+
     }
     
     init(vm: VM, router: Router) {
@@ -39,6 +40,4 @@ class BaseViewController<VM>: UIViewController {
         }
         self.present(alert, animated: true)
     }
-    
-    
 }

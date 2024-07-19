@@ -18,8 +18,10 @@ final class NotificationViewController: BaseViewController<NotificationViewModel
     private lazy var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.estimatedItemSize = .init(width: (view.bounds.width)/3, height: 38)
+        layout.scrollDirection = .horizontal
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.contentInset = .init(top: 2, left: 16, bottom: 2, right: 16)
+        collectionView.showsHorizontalScrollIndicator = false
         return collectionView
     }()
     
@@ -54,7 +56,7 @@ final class NotificationViewController: BaseViewController<NotificationViewModel
             await vm.getUsers()
         }
         view.backgroundColor = .white
-        navigationItem.title = "Activity"
+        navigationItem.title = "activity".localized()
         navigationController?.navigationBar.prefersLargeTitles = true
         view.addSubview(collectionView)
         view.addSubview(activityTableView)
@@ -97,7 +99,7 @@ final class NotificationViewController: BaseViewController<NotificationViewModel
     private func setupConstraints() {
         collectionView.snp.makeConstraints { make in
             make.top.leading.trailing.equalTo(view.safeAreaLayoutGuide)
-            make.height.equalTo(38)
+            make.height.equalTo(50)
         }
         
         activityTableView.snp.makeConstraints { make in

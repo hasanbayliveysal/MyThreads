@@ -5,13 +5,6 @@
 //  Created by Veysal Hasanbayli on 01.07.24.
 //
 
-//
-//  LoginViewController.swift
-//  MyThreads
-//
-//  Created by Veysal Hasanbayli on 01.07.24.
-//
-
 import UIKit
 import SnapKit
 
@@ -113,6 +106,8 @@ final class LoginViewController: BaseViewController<LoginViewModel> {
         ].forEach({mainStackView.addArrangedSubview($0)})
         mainStackView.setCustomSpacing(24, after: passwordTextField)
         setupConstraints()
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
+        view.addGestureRecognizer(tapGesture)
     }
     
     private func setupConstraints() {
@@ -173,4 +168,9 @@ extension LoginViewController {
             self.present(vc, animated: true)
         }
     }
+    
+    @objc private func dismissKeyboard() {
+        view.endEditing(true)
+    }
 }
+

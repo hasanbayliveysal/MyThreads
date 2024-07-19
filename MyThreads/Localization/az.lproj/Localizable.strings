@@ -84,3 +84,14 @@
 "en" = "English";
 "replies" = "Cavablar";
 "writereplieshere" = "Yorumunuzu buraya yazın";
+"mentions" = "Bəyənmələr";
+"follows" = "Izləmələr";
+"followedyou" = "Səni izləməyə başladı";
+"likedthread"  = "Sənin threadini bəyəndi";
+"repliedthread" = "Sənin threadinə cavab verdi";
+"activity" = "Bildirişlər";
+
+"Please configure your email in the Mail app." = "Zəhmət olmasa, e-poçtunuzu Mail proqramında konfiqurasiya edin.";
+"Mail services are not available" = "Poçt xidmətləri mövcud deyil";
+
+

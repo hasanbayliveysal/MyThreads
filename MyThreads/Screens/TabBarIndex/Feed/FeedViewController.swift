@@ -14,6 +14,7 @@ final class FeedViewController: BaseViewController<FeedViewModel> {
         let tableView = UITableView()
         tableView.register(FeedTableViewCell.self, forCellReuseIdentifier: FeedTableViewCell.identifier)
         tableView.showsVerticalScrollIndicator = false
+        tableView.separatorStyle = .none
         return tableView
     }()
     
@@ -40,7 +41,6 @@ final class FeedViewController: BaseViewController<FeedViewModel> {
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        showLoadingIndicator()
         fetchThreads()
     }
     
@@ -74,7 +74,6 @@ final class FeedViewController: BaseViewController<FeedViewModel> {
     }
     
     @objc private func reloadButtonTapped() {
-        showLoadingIndicator()
         fetchThreads()
     }
     
@@ -84,15 +83,14 @@ final class FeedViewController: BaseViewController<FeedViewModel> {
     }
     
     func fetchThreads() {
+        showLoadingIndicator()
         Task {
             do {
                 try await vm.getThreads()
                 feedTableView.reloadData()
             } catch {
                 showAlert("error".localized(), "\(error.localizedDescription)")
-                DispatchQueue.main.async {
-                    self.hideLoadingIndicator()
-                }
+                self.hideLoadingIndicator()
             }
         }
     }
@@ -103,9 +101,11 @@ final class FeedViewController: BaseViewController<FeedViewModel> {
     }
     
     private func hideLoadingIndicator() {
-        blurView.isHidden = true
-        activityIndicator.stopAnimating()
-        refreshControl.endRefreshing()
+        DispatchQueue.main.async {
+            self.blurView.isHidden = true
+            self.activityIndicator.stopAnimating()
+            self.refreshControl.endRefreshing()
+        }
     }
     
     private func showRefreshIndicator() {
@@ -116,7 +116,8 @@ final class FeedViewController: BaseViewController<FeedViewModel> {
     private func pushCommentVC() {
         vm.commentButtonTapped = { [weak self] id in
             guard let self = self else { return }
-            let vc = self.router.commentVC(threadID: id)
+            let vc = self.router.commentVC(threadID: id) as! CommentsVC
+            vc.delegate = self
             let navVC = UINavigationController(rootViewController: vc)
             self.present(navVC, animated: true)
         }
@@ -136,3 +137,8 @@ final class FeedViewController: BaseViewController<FeedViewModel> {
 }
 
 
+extension FeedViewController: RepliesDelegate {
+    func repliesDidChange() {
+        self.fetchThreads()
+    }
+}

@@ -23,15 +23,13 @@ class TabBarController: UITabBarController {
     }
     
     private func setupViewController() {
-        let profileVC = router.currentUserProfileVC() as! CurrentUserProfileViewController
-        profileVC.delegate = self
-        
+       
         viewControllers = [
             createNavController(rootViewController: router.feedVC(), tabbarIcon: UIImage(named: "feed")),
             createNavController(rootViewController: router.searchVC(), tabbarIcon: UIImage(named: "explore")),
             createNavController(rootViewController: router.uploadVC(), tabbarIcon: UIImage(named: "write")),
             createNavController(rootViewController: router.notificationVC(), tabbarIcon: UIImage(named: "heart")),
-            createNavController(rootViewController: profileVC, tabbarIcon: UIImage(named: "account"))
+            createNavController(rootViewController:  router.currentUserProfileVC(), tabbarIcon: UIImage(named: "account"))
         ]
     }
     
@@ -42,11 +40,3 @@ class TabBarController: UITabBarController {
     }
     
 }
-
-extension TabBarController: SignOutDelegate {
-    func didSignOut() {
-        print("DEBUG Sign Out")
-        
-    }
-}
-

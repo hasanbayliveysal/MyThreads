@@ -61,7 +61,7 @@ class CenterTitleCVCell: UICollectionViewCell {
 
 
 enum Activities: String{
-    case Follow
-    case Replies
-    case Mentions
+    case Follow = "follows"
+    case Replies = "replies"
+    case Mentions = "mentions"
 }

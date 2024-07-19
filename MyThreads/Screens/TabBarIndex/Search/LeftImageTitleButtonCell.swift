@@ -107,11 +107,11 @@ class LeftImageTitleButtonCell: UITableViewCell {
         guard let activity else {return}
         switch activity {
         case .Follow :
-            subtitleLabel.text = "Followed you"
+            subtitleLabel.text = "followedyou".localized()
         case .Mentions :
-            subtitleLabel.text = "Liked your thread"
+            subtitleLabel.text = "likedthread".localized()
         case .Replies :
-            subtitleLabel.text = "Replied your thread"
+            subtitleLabel.text = "repliedthread".localized()
         }
         
     }

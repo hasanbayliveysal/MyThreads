@@ -71,10 +71,12 @@ extension FeedViewModel: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: FeedTableViewCell.identifier, for: indexPath) as! FeedTableViewCell
-        cell.configure(with: threads[indexPath.row]) {
-            self.imageLoaded()
+        DispatchQueue.main.async {
+            cell.configure(with: self.threads[indexPath.row]) {
+                self.imageLoaded()
+            }
         }
-        
+    
         cell.commentButtonTapped = { [weak self] in
             self?.commentButtonTapped?(self?.threads[indexPath.row].id ?? "")
         }
@@ -98,4 +100,5 @@ extension FeedViewModel: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         self.selectedUserID?(threads[indexPath.row].author)
     }
+    
 }

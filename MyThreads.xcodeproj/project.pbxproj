@@ -68,6 +68,7 @@
 		FCF9CC1A2C48F7AE00485DE9 /* ActivityService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCF9CC192C48F7AE00485DE9 /* ActivityService.swift */; };
 		FCF9CC1E2C49C5CD00485DE9 /* LikedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCF9CC1D2C49C5CD00485DE9 /* LikedViewController.swift */; };
 		FCF9CC222C4A92D900485DE9 /* CenterInputButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCF9CC212C4A92D900485DE9 /* CenterInputButtonView.swift */; };
+		FCF9CC252C4B1DEF00485DE9 /* InitialViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCF9CC242C4B1DEF00485DE9 /* InitialViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -129,6 +130,7 @@
 		FCF9CC192C48F7AE00485DE9 /* ActivityService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityService.swift; sourceTree = "<group>"; };
 		FCF9CC1D2C49C5CD00485DE9 /* LikedViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikedViewController.swift; sourceTree = "<group>"; };
 		FCF9CC212C4A92D900485DE9 /* CenterInputButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CenterInputButtonView.swift; sourceTree = "<group>"; };
+		FCF9CC242C4B1DEF00485DE9 /* InitialViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InitialViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -438,6 +440,7 @@
 		FC94BA032C33F5A70073A0F7 /* Screens */ = {
 			isa = PBXGroup;
 			children = (
+				FCF9CC232C4B1DCE00485DE9 /* InitialViewController */,
 				FC429FB12C3440A000100F2E /* TabBarIndex */,
 				FC429FB02C34409700100F2E /* TabBarMain */,
 				FC94BA072C33F5BE0073A0F7 /* Register */,
@@ -513,6 +516,14 @@
 				FCF9CC1D2C49C5CD00485DE9 /* LikedViewController.swift */,
 			);
 			path = LikedThreadsVC;
+			sourceTree = "<group>";
+		};
+		FCF9CC232C4B1DCE00485DE9 /* InitialViewController */ = {
+			isa = PBXGroup;
+			children = (
+				FCF9CC242C4B1DEF00485DE9 /* InitialViewController.swift */,
+			);
+			path = InitialViewController;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -628,6 +639,7 @@
 				FC429FD02C35200700100F2E /* UICollectionViewCell+Ex.swift in Sources */,
 				FC94BA022C33ECBB0073A0F7 /* String+Ex.swift in Sources */,
 				FC51F72D2C42BFD800439952 /* ThreadsService.swift in Sources */,
+				FCF9CC252C4B1DEF00485DE9 /* InitialViewController.swift in Sources */,
 				FC429FE72C374C8A00100F2E /* UserService.swift in Sources */,
 				FC51F7392C455EB600439952 /* MoreTVCell.swift in Sources */,
 				FC94B9FF2C33EC780073A0F7 /* LocalizationService.swift in Sources */,

@@ -82,6 +82,7 @@ class FeedTableViewCell: UITableViewCell {
     private var likeButton: BlackTintButton = {
         let button = BlackTintButton()
         button.setImage(UIImage(named: "like"), for: .normal)
+   
         return button
     }()
     
@@ -115,6 +116,7 @@ class FeedTableViewCell: UITableViewCell {
         return button
     }()
     
+    
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         setupUI()
@@ -127,15 +129,17 @@ class FeedTableViewCell: UITableViewCell {
     private func setupUI() {
         selectionStyle = .none
         contentView.addSubview(mainStackView)
+        contentView.addSubview(actionsStackView)
         [timeLabel, threeDotButton]
             .forEach({rightStackView.addArrangedSubview($0)})
         [likeButton, likeCountLabel, commentButton, commentCountLabel, repostButton, sendButton]
             .forEach({actionsStackView.addArrangedSubview($0)})
-        [usernameLabel, postedLabel, actionsStackView]
+        [usernameLabel, postedLabel]
             .forEach({verticalStackView.addArrangedSubview($0)})
         [profileImage, verticalStackView, rightStackView]
             .forEach({mainStackView.addArrangedSubview($0)})
         setupConstraints()
+      //  verticalStackView.setCustomSpacing(20, after: postedLabel)
         actionsStackView.setCustomSpacing(4, after: likeButton)
         actionsStackView.setCustomSpacing(4, after: commentButton)
         
@@ -147,8 +151,14 @@ class FeedTableViewCell: UITableViewCell {
         profileImage.clipsToBounds = true
         profileImage.layer.cornerRadius = 24
         mainStackView.snp.makeConstraints { make in
-            make.top.bottom.equalTo(contentView.safeAreaLayoutGuide).inset(20)
+            make.top.equalTo(contentView.snp.top).offset(20)
             make.leading.trailing.equalTo(contentView.safeAreaLayoutGuide).inset(8)
+        }
+        
+        actionsStackView.snp.makeConstraints { make in
+            make.top.equalTo(mainStackView.snp.bottom).offset(8)
+            make.leading.equalTo(contentView.snp.leading).inset(72)
+            make.bottom.equalTo(contentView.snp.bottom).offset(-20)
         }
         
         profileImage.snp.makeConstraints { make in
@@ -158,7 +168,7 @@ class FeedTableViewCell: UITableViewCell {
     
     func configure(with thread: Thread, imageLoadedCompletion: @escaping () -> Void) {
         isLiked = false
-        // Fetch the user data asynchronously
+        profileImage.image =  UIImage(named: "userIcon")
         guard let userId = currentUser?.uid else {return}
         Task {
             do {

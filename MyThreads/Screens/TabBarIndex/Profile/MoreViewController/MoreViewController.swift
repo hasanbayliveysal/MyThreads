@@ -5,9 +5,11 @@
 //  Created by Veysal Hasanbayli on 15.07.24.
 //
 
-import UIKit
 
-final class MoreViewController: BaseViewController<MoreViewModel> {
+import UIKit
+import MessageUI
+
+final class MoreViewController: BaseViewController<MoreViewModel>, MFMailComposeViewControllerDelegate {
     
     private var moreTableView: UITableView = {
         let tableView = UITableView()
@@ -24,7 +26,6 @@ final class MoreViewController: BaseViewController<MoreViewModel> {
         button.addTarget(self, action: #selector(didTapLogOut), for: .touchUpInside)
         return button
     }()
-    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -67,7 +68,7 @@ final class MoreViewController: BaseViewController<MoreViewModel> {
     
     private func performPostLoginOperations() async {
         vm.setUserSignedOut()
-        await MainActor.run  {
+        await MainActor.run {
             let vc = router.loginVC()
             let navVC = UINavigationController(rootViewController: vc)
             navVC.modalPresentationStyle = .fullScreen
@@ -82,26 +83,65 @@ final class MoreViewController: BaseViewController<MoreViewModel> {
             case .liked:
                 self.navigationController?.pushViewController(self.router.likedVC(), animated: true)
             case .about:
-                print("about")
+                self.openInstagramProfile()
             case .help:
-                print("help")
+                self.presentMailCompose()
             case .language:
                 self.changeLanguage()
             }
         }
     }
-  
+    
+    private func presentMailCompose() {
+        guard MFMailComposeViewController.canSendMail() else {
+            showAlert("Mail services are not available", "Please configure your email in the Mail app.")
+            return
+        }
+        
+        let mailComposeViewController = MFMailComposeViewController()
+        mailComposeViewController.mailComposeDelegate = self
+        mailComposeViewController.setToRecipients(["hasanbayliveysaldev@gmail.com"])
+        mailComposeViewController.setSubject("Help Request")
+        
+        self.present(mailComposeViewController, animated: true)
+    }
+    
+    private func openInstagramProfile() {
+        let username = "hasanbayli_veysal"
+        let appURL = URL(string: "instagram://user?username=\(username)")!
+        let webURL = URL(string: "https://instagram.com/\(username)")!
+        
+        if UIApplication.shared.canOpenURL(appURL) {
+            UIApplication.shared.open(appURL, options: [:])
+        } else {
+            UIApplication.shared.open(webURL, options: [:])
+        }
+    }
+    
+    func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {
+        controller.dismiss(animated: true)
+    }
+    
     private func changeLanguage() {
         let alert = UIAlertController(title: "doYouWantToChangeLanguage".localized(), message: "selectLanguage".localized(), preferredStyle: .actionSheet)
         let azButton = UIAlertAction(title: "az".localized(), style: .default) { [weak self] _ in
             self?.vm.changeLanguage(.az)
+            self?.resetAppState()
         }
         let enButton = UIAlertAction(title: "en".localized(), style: .default) { [weak self] _ in
             self?.vm.changeLanguage(.en)
+            self?.resetAppState()
         }
         alert.addAction(azButton)
         alert.addAction(enButton)
         alert.addAction(UIAlertAction(title: "cancel".localized(), style: .cancel))
         self.present(alert, animated: true)
+    }
+    
+    private func resetAppState() {
+        guard let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+                 let window = scene.windows.first else { return }
+        window.rootViewController = TabBarController()
+        UIView.transition(with: window, duration: 0.5, options: .transitionCrossDissolve, animations: nil, completion: nil)
     }
 }

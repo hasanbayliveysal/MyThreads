@@ -20,7 +20,7 @@ final class RegisterViewController: BaseViewController<RegisterViewModel> {
         sv.alignment = .fill
         sv.distribution = .fillEqually
         sv.axis = .vertical
-        sv.spacing = 12
+        sv.spacing = 6
         return sv
     }()
     
@@ -65,8 +65,10 @@ final class RegisterViewController: BaseViewController<RegisterViewModel> {
         [appIcon, mainStackView].forEach({view.addSubview($0)})
         [emailTextField, passwordTextField, fullNameTextField,usernameTextField,registerButton
         ].forEach({mainStackView.addArrangedSubview($0)})
-        mainStackView.setCustomSpacing(24, after: usernameTextField)
+        mainStackView.setCustomSpacing(8, after: usernameTextField)
         setupConstraints()
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
+        view.addGestureRecognizer(tapGesture)
     }
     
     private func setupConstraints() {
@@ -99,5 +101,8 @@ final class RegisterViewController: BaseViewController<RegisterViewModel> {
                 self.showAlert("error", error.localizedDescription)
             }
         }
+    }
+    @objc private func dismissKeyboard() {
+        view.endEditing(true)
     }
 }

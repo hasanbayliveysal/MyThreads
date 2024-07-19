@@ -64,6 +64,7 @@ class CenterInputButtonView: UIView {
             return
         }
         postButtunTapped?(text)
+        inputTextField.text = ""
     }
     
 }

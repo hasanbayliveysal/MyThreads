@@ -27,6 +27,12 @@ class NotificationViewModel: NSObject {
             reloadTableView?()
         }
     }
+    private var previousSelectedIndex: IndexPath?
+    
+    override init() {
+        super.init()
+        previousSelectedIndex = IndexPath(item: 0, section: 0)
+    }
     
     func getUsers() async  {
         loadingStateChanged?(true)
@@ -51,7 +57,6 @@ class NotificationViewModel: NSObject {
     }
 }
 
-
 extension NotificationViewModel: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return users.count
@@ -73,7 +78,7 @@ extension NotificationViewModel: UITableViewDelegate, UITableViewDataSource {
                 print("Error fetching followed users: \(error)")
             }
         }
-
+        
         cell.isFollowingClousure = { isFollowing in
             Task {
                 do {
@@ -102,18 +107,26 @@ extension NotificationViewModel: UICollectionViewDelegate, UICollectionViewDataS
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CenterTitleCVCell.identifier, for: indexPath) as! CenterTitleCVCell
-        cell.configure(with: activities[indexPath.row].rawValue)
-        if indexPath.row == 0 {
+        cell.configure(with: activities[indexPath.row].rawValue.localized())
+        if indexPath == previousSelectedIndex {
             cell.setSelected(true)
+        } else {
+            cell.setSelected(false)
         }
         return cell
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        if let previousIndex = previousSelectedIndex, previousIndex != indexPath {
+            if let previousCell = collectionView.cellForItem(at: previousIndex) as? CenterTitleCVCell {
+                previousCell.setSelected(false)
+            }
+        }
         if let cell = collectionView.cellForItem(at: indexPath) as? CenterTitleCVCell {
             cell.setSelected(true)
         }
-        selectedActivity = (activities[indexPath.row])
+        previousSelectedIndex = indexPath
+        selectedActivity = activities[indexPath.row]
     }
     
     func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {

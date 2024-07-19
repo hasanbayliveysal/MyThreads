@@ -8,12 +8,10 @@
 import UIKit
 import FirebaseAuth
 
-protocol SignOutDelegate {
-    func didSignOut()
-}
+
 
 final class CurrentUserProfileViewController: BaseViewController<UserProfileViewModel> {
-    var delegate: SignOutDelegate?
+  
     private let moreButton: UIButton = {
         let button = UIButton()
         button.setImage(UIImage(systemName: "line.horizontal.3"), for: .normal)
@@ -153,6 +151,8 @@ final class CurrentUserProfileViewController: BaseViewController<UserProfileView
 
 extension CurrentUserProfileViewController: SelectedImageDelegate {
     func setUserProfile(userData: UserData) {
+        fetchThreads()
+        feedTableView.reloadData()
         headerView.rightImage.image = userData.image
         headerView.bioLabel.text = userData.bio
     }

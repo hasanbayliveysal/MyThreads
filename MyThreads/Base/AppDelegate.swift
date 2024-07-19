@@ -17,9 +17,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         LocalizationService.shared.getLanguage()
         let isUserLoggedIn = UserDefaults.standard.bool(forKey: "userLoggedIn")
         self.window = UIWindow(frame: UIScreen.main.bounds)
-        let router = Router()
         let tabBar = TabBarController()
-        let navVC = UINavigationController(rootViewController: router.loginVC())
+        let navVC = UINavigationController(rootViewController: InitialViewController())
         self.window?.rootViewController = isUserLoggedIn ? tabBar : navVC
         self.window?.makeKeyAndVisible()
         return true
