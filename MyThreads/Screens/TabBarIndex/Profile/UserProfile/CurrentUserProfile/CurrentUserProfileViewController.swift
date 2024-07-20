@@ -8,10 +8,8 @@
 import UIKit
 import FirebaseAuth
 
-
-
 final class CurrentUserProfileViewController: BaseViewController<UserProfileViewModel> {
-  
+    
     private let moreButton: UIButton = {
         let button = UIButton()
         button.setImage(UIImage(systemName: "line.horizontal.3"), for: .normal)
@@ -40,7 +38,7 @@ final class CurrentUserProfileViewController: BaseViewController<UserProfileView
     }()
     
     private let activityIndicator: UIActivityIndicatorView = {
-        let indicator = UIActivityIndicatorView(style: .large)
+        let indicator = UIActivityIndicatorView(style: .medium)
         indicator.hidesWhenStopped = true
         return indicator
     }()
@@ -55,8 +53,8 @@ final class CurrentUserProfileViewController: BaseViewController<UserProfileView
                 self?.feedTableView.reloadData()
             }
         }
-        headerView.selected = { [weak self] seleced in
-            self?.vm.selectedFilter = seleced
+        headerView.selected = { [weak self] selected in
+            self?.vm.selectedFilter = selected
             self?.fetchThreads()
         }
     }
@@ -90,6 +88,7 @@ final class CurrentUserProfileViewController: BaseViewController<UserProfileView
         feedTableView.dataSource = vm
         moreButton.addTarget(self, action: #selector(didTapMoreButton), for: .touchUpInside)
         headerView.addTargetEditButton(target: self, action: #selector(didTapEditButton), for: .touchUpInside)
+        headerView.addTargetShareButton(target: self, action: #selector(didTapShareButton), for: .touchUpInside)
         setupConstraints()
     }
     
@@ -147,12 +146,18 @@ final class CurrentUserProfileViewController: BaseViewController<UserProfileView
         vc.hidesBottomBarWhenPushed = true
         self.navigationController?.pushViewController(vc, animated: true)
     }
+    
+    @objc
+    private func didTapShareButton() {
+        guard let user = Auth.auth().currentUser else { return }
+        let shareURL = "https://mythreads.com/\(user.uid)"
+        let activityVC = UIActivityViewController(activityItems: [shareURL], applicationActivities: nil)
+        present(activityVC, animated: true, completion: nil)
+    }
 }
 
 extension CurrentUserProfileViewController: SelectedImageDelegate {
     func setUserProfile(userData: UserData) {
-        fetchThreads()
-        feedTableView.reloadData()
         headerView.rightImage.image = userData.image
         headerView.bioLabel.text = userData.bio
     }

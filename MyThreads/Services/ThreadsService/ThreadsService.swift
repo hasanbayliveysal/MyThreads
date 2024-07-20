@@ -19,6 +19,7 @@ protocol ThreadsServiceProtocol {
     func getComment(with threadID: String) async throws -> [Thread.Comment]
     func getRepliedThread(with id: String) async throws -> [Thread]
     func getLikedByCurrentUser(userID: String) async throws -> [Thread]
+    func deleteThread(with threadID: String) async throws 
 }
 
 class ThreadsService: ThreadsServiceProtocol {
@@ -112,10 +113,10 @@ class ThreadsService: ThreadsServiceProtocol {
     }
     
     func getComment(with threadID: String) async throws -> [Thread.Comment] {
-           let document = try await db.collection("threads").document(threadID).getDocument()
-           let thread = try document.data(as: Thread.self)
-           let comments = thread.comments.sorted(by: { $0.time > $1.time })
-           return comments
+        let document = try await db.collection("threads").document(threadID).getDocument()
+        let thread = try document.data(as: Thread.self)
+        let comments = thread.comments.sorted(by: { $0.time > $1.time })
+        return comments
     }
     
     func getLikedByCurrentUser(userID: String) async throws -> [Thread] {
@@ -129,4 +130,11 @@ class ThreadsService: ThreadsServiceProtocol {
         return threads.filter({$0.likedBy.contains(where: {$0 == userID})})
     }
     
+    func deleteThread(with threadID: String) async throws {
+        do {
+            try await db.collection("threads").document(threadID).delete()
+        } catch {
+            throw error
+        }
+    }
 }

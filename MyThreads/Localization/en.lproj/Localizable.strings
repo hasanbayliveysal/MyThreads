@@ -87,3 +87,6 @@
 "activity" = "Activity";
 "Please configure your email in the Mail app." = "Please configure your email in the Mail app.";
 "Mail services are not available" = "Mail services are not available";
+"Are you sure you want to delete this thread?" = "Are you sure you want to delete this thread?";
+"Delete Thread" =  "Delete Thread";
+"delete" = "delete";

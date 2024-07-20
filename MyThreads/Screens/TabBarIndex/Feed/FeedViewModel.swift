@@ -14,6 +14,7 @@ class FeedViewModel: NSObject {
     private var imagesLoading: Int = 0
     var allImagesLoaded: (() -> Void)?
     var commentButtonTapped: ((String) -> Void)?
+    var threeDotButtonTapped: ((String, String) -> Void)?
     
     let currentUser = Auth.auth().currentUser
     
@@ -61,6 +62,9 @@ class FeedViewModel: NSObject {
         }
     }
     
+    func deleteThread(with threadID: String) async throws {
+        try await ThreadsService.shared.deleteThread(with: threadID)
+    }
    
 }
 
@@ -92,6 +96,10 @@ extension FeedViewModel: UITableViewDelegate, UITableViewDataSource {
                     await self.likeThread(threadId: self.threads[indexPath.row].id)
                 }
             }
+        }
+        
+        cell.threeDotButtonTapped = { [weak self] in
+            self?.threeDotButtonTapped?(self?.threads[indexPath.row].id ?? "", self?.threads[indexPath.row].author ?? "")
         }
         return cell
     }

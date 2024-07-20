@@ -7,6 +7,7 @@
 
 import UIKit
 import FirebaseAuth
+import MessageUI
 
 final class FeedViewController: BaseViewController<FeedViewModel> {
     
@@ -38,6 +39,7 @@ final class FeedViewController: BaseViewController<FeedViewModel> {
         vm.allImagesLoaded = { [weak self] in
             self?.hideLoadingIndicator()
         }
+        handleThreeDotButton()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -134,11 +136,78 @@ final class FeedViewController: BaseViewController<FeedViewModel> {
             }
         }
     }
+    
+    private func handleThreeDotButton() {
+        vm.threeDotButtonTapped = { [weak self] (threadID, threadAuthorID) in
+            guard let self = self else { return }
+            let currentUserID = Auth.auth().currentUser?.uid
+            let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+            
+            if threadAuthorID == currentUserID {
+                // Option to delete the thread
+                let deleteAction = UIAlertAction(title: "Delete Thread", style: .destructive) { _ in
+                    self.showDeleteConfirmationAlert(threadID: threadID)
+                }
+                actionSheet.addAction(deleteAction)
+            } else {
+                // Option to report the thread
+                let reportAction = UIAlertAction(title: "Report Thread", style: .default) { _ in
+                    self.reportThread(threadID: threadID)
+                }
+                actionSheet.addAction(reportAction)
+            }
+            
+            let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
+            actionSheet.addAction(cancelAction)
+            
+            self.present(actionSheet, animated: true)
+        }
+    }
+    
+    private func showDeleteConfirmationAlert(threadID: String) {
+        let alert = UIAlertController(title: "Delete Thread".localized(), message: "Are you sure you want to delete this thread?".localized(), preferredStyle: .alert)
+        let deleteAction = UIAlertAction(title: "delete".localized(), style: .destructive) { _ in
+            Task {
+                do {
+                    try await self.vm.deleteThread(with: threadID)
+                    self.fetchThreads()
+                } catch {
+                    self.showAlert("error".localized(), error.localizedDescription)
+                }
+            }
+        }
+        let cancelAction = UIAlertAction(title: "cancel".localized(), style: .cancel)
+        
+        alert.addAction(deleteAction)
+        alert.addAction(cancelAction)
+        
+        present(alert, animated: true)
+    }
+    
+    private func reportThread(threadID: String) {
+        guard MFMailComposeViewController.canSendMail() else {
+            showAlert("Mail Services are not available", "Please configure your mail account in order to send emails.")
+            return
+        }
+        
+        let composeVC = MFMailComposeViewController()
+        composeVC.mailComposeDelegate = self
+        composeVC.setToRecipients(["hasanbayliveysalev@gmail.com"])
+        composeVC.setSubject("Report User Thread")
+        composeVC.setMessageBody("https://mythreads.com/\(threadID)", isHTML: false)
+        
+        present(composeVC, animated: true)
+    }
 }
-
 
 extension FeedViewController: RepliesDelegate {
     func repliesDidChange() {
         self.fetchThreads()
+    }
+}
+
+extension FeedViewController: MFMailComposeViewControllerDelegate {
+    func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {
+        controller.dismiss(animated: true)
     }
 }

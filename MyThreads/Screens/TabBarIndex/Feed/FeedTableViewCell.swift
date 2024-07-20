@@ -12,6 +12,7 @@ import FirebaseAuth
 class FeedTableViewCell: UITableViewCell {
     var likeButtonTapped: ((Bool) -> Void)?
     var commentButtonTapped: (() -> Void)?
+    var threeDotButtonTapped: (()->Void)?
     
     private var likesCount: Int = 0
     private var isLiked: Bool = false
@@ -145,6 +146,7 @@ class FeedTableViewCell: UITableViewCell {
         
         likeButton.addTarget(self, action: #selector(handleLikeButtonTapped), for: .touchUpInside)
         commentButton.addTarget(self, action:  #selector(handleCommentButtonTapped), for: .touchUpInside)
+        threeDotButton.addTarget(self, action:  #selector(handleThreeDotButtonTapped), for: .touchUpInside)
     }
     
     private func setupConstraints() {
@@ -158,7 +160,7 @@ class FeedTableViewCell: UITableViewCell {
         actionsStackView.snp.makeConstraints { make in
             make.top.equalTo(mainStackView.snp.bottom).offset(8)
             make.leading.equalTo(contentView.snp.leading).inset(72)
-            make.bottom.equalTo(contentView.snp.bottom).offset(-20)
+            make.bottom.equalTo(contentView.snp.bottom).offset(-30)
         }
         
         profileImage.snp.makeConstraints { make in
@@ -227,6 +229,11 @@ class FeedTableViewCell: UITableViewCell {
     @objc
     private func handleCommentButtonTapped() {
         commentButtonTapped?()
+    }
+    
+    @objc
+    private func handleThreeDotButtonTapped() {
+        threeDotButtonTapped?()
     }
 }
 

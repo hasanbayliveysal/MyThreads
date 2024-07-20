@@ -30,7 +30,7 @@ final class GuestUserProfileViewController: BaseViewController<UserProfileViewMo
     }()
     
     private let activityIndicator: UIActivityIndicatorView = {
-        let indicator = UIActivityIndicatorView(style: .large)
+        let indicator = UIActivityIndicatorView(style: .medium)
         indicator.hidesWhenStopped = true
         return indicator
     }()
